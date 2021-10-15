@@ -18,12 +18,12 @@ var app = {
             querySnapshot.forEach((doc) => {
                 console.log(doc.id, " => ", doc.data());
                 $("#TableData").append("<tr>");
-                $("#TableData").append("<td scope='col'>" + doc.data().nome + "</td>");
-                $("#TableData").append("<td scope='col'>" + doc.data().telefone + "</td>");
-                $("#TableData").append("<td scope='col'>" + doc.data().origem + "</td>");
-                $("#TableData").append("<td scope='col'>" + doc.data().data_contato + "</td>");
-                $("#TableData").append("<td scope='col'>" + doc.data().observacao + "</td>");
-                $("#TableData").append("<td scope='col'><a href='" + cordova.file.applicationDirectory + "www/editarClientes.html?Telefone=" + doc.data().Telefone + "'>Editar</a>&nbsp;|&nbsp;<a href='" + cordova.file.applicationDirectory + "www/excluirClientes.html?Telefone=" + doc.data().telefone + "'>Excluir</a></td>");
+                $("#TableData").append("<td scope='col'>" + doc.data().Nome + "</td>");
+                $("#TableData").append("<td scope='col'>" + doc.data().Telefone + "</td>");
+                $("#TableData").append("<td scope='col'>" + doc.data().Origem + "</td>");
+                $("#TableData").append("<td scope='col'>" + doc.data().Data_contato + "</td>");
+                $("#TableData").append("<td scope='col'>" + doc.data().Observacao + "</td>");
+                $("#TableData").append("<td scope='col'><a href='" + cordova.file.applicationDirectory + "www/editarClientes.html?Telefone=" + doc.data().Telefone + "'>Editar</a>&nbsp;|&nbsp;<a href='" + cordova.file.applicationDirectory + "www/excluirClientes.html?Telefone=" + doc.data().Telefone + "'>Excluir</a></td>");
                 $("#TableData").append("</tr>");
             });
         })

@@ -8,67 +8,67 @@ var app = {
     onDeviceReady: function() {
         document.getElementById("btnBuscar").addEventListener("click",app.buscar);
         document.getElementById("btnExcluir").addEventListener("click",app.excluir);
-        this.receivedEvent('deviceready');
-    },
-
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        db = window.sqlitePlugin.openDatabase({
-            name: 'aplicativo.db',
-            location: 'default',            
-            androidDatabaseProvider: 'system'
-        });
-
-        db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (nome, telefone, origem, data_contato, observacao)');
-        }, function(error) {
-            console.log('Transaction ERROR: ' + error.message);
-        }, function() {
-            //alert('Banco e Tabela clientes criados com sucesso!!!');
-        });
     },
     
     buscar: function(){
         var url_string = window.location.href;
         var url = new URL(url_string);
-        var getTelefone = url.searchParams.get("telefone");
-        //alert(getTelefone);
-        db.executeSql(
-            'SELECT nome AS uNome, telefone AS uTelefone, origem AS uOrigem, data_contato AS uDataContato, observacao ' + 
-            'AS uObservacao FROM clientes WHERE telefone = ?', [getTelefone], function(rs) {
-                //alert(JSON.stringify(rs));
-                //alert(rs.rows.length);
-                let i = 0;
-                for(i = 0; i < rs.rows.length; i++){
-                    //alert("item "+i);
-                    let recordItem = rs.rows.item(i);
-                    //alert(JSON.stringify(recordItem));
-                    document.getElementById("txtNome").value = rs.rows.item(i).uNome;
-                    document.getElementById("txtTelefone").value = rs.rows.item(i).uTelefone;
-                    document.getElementById("txtOrigem").value = rs.rows.item(i).uOrigem;
-                    document.getElementById("txtDataContato").value = rs.rows.item(i).uDataContato;
-                    document.getElementById("txtObservacoes").value = rs.rows.item(i).uObservacao;
-                    
-                }
-            //alert('Record count (expected to be 2): ' + rs.rows.item(0).uLoginName);
-        }, function(error) {
-            //alert('Erro no SELECT: ' + error.message);
-        }); 
+        var getTelefone = url.searchParams.get("Telefone");
+
+        var db = firebase.firestore();
+        var ag = db.collection("cadastro").where("Telefone", "==", getTelefone);
+
+        ag.get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                document.getElementById("txtNome").value = doc.data().Nome;
+                document.getElementById("txtTelefone").value = doc.data().Telefone;
+                document.getElementById("txtOrigem").value = doc.data().Origem;
+                document.getElementById("txtDataContato").value = doc.data().Data_contato;
+                document.getElementById("txtObservacao").value = doc.data().Observacao;
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
     },
 
-    excluir: function(){
+    excluir: function(){ 
         var url_string = window.location.href;
         var url = new URL(url_string);
-        var getTelefone = url.searchParams.get("telefone");
-        //alert(getTelefone);
+        var getTelefone = url.searchParams.get("Telefone");
 
-        db.transaction(function(tx) {
-            tx.executeSql('DELETE FROM clientes WHERE telefone=?', [getTelefone]);
-        }, function(error) {
-            //alert('Erro durante a transacao com o banco: ' + error.message);
-        }, function() {
-            //alert('Atualização realizada com sucesso!!!');
-        });
+        var db = firebase.firestore();
+        var ag = db.collection("cadastro").where("Telefone", "==", getTelefone);
+
+        navigator.notification.confirm(
+            'Deseja realmente excluir esse registro?',  // message
+            onConfirm,         // callback
+            'Excluir',         // title
+            ['Sim','Não']      // buttonName
+        );
+
+        function onConfirm(buttonIndex) {
+            // do something
+            if(buttonIndex == 1){
+                ag.get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        db.collection("cadastro").doc(doc.id).delete().then(() => {
+                            console.log("Document successfully deleted!");
+                            window.location.href = cordova.file.applicationDirectory + "www/consultarClientes.html";
+                        }).catch((error) => {
+                            console.error("Error removing document: ", error);
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+            }
+        }
+
     }
 
 };

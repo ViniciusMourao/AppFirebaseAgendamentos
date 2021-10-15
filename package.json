@@ -26,7 +26,8 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-media": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-dialogs": {}
+      "cordova-plugin-dialogs": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
       "browser",

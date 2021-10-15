@@ -18,11 +18,10 @@
     },
     "cordova-plugin-dialogs": {
       "PACKAGE_NAME": "com.projeto.primeiroapp"
-    }
-  },
-  "dependent_plugins": {
+    },
     "cordova-plugin-file": {
       "PACKAGE_NAME": "com.projeto.primeiroapp"
     }
-  }
+  },
+  "dependent_plugins": {}
 }
